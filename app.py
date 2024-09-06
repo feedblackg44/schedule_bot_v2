@@ -30,8 +30,11 @@ class WebhookApp:
         async def on_startup(app):
             await self.bot.init()
             self.logger.info(f"Starting webhook on {self.webhook_url}")
-            await self.bot.set_webhook(self.webhook_url,
-                                       certificate=FSInputFile(f"/ssl_keys/{self.cert_name}"))
+            if self.cert_name:
+                await self.bot.set_webhook(self.webhook_url,
+                                           certificate=FSInputFile(f"/ssl_keys/{self.cert_name}"))
+            else:
+                await self.bot.set_webhook(self.webhook_url)
 
         self.app.on_startup.append(on_startup)
 
