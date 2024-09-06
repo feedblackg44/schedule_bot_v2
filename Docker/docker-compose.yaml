@@ -1,0 +1,22 @@
+name: schedule_tg
+
+services:
+  bot:
+    build: ..
+    volumes:
+      - ..:/app
+      - ${SSL_CERT}:/ssl_keys
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      WEBHOOK_HOST: ${WEBHOOK_HOST}
+      WEBAPP_HOST: ${WEBAPP_HOST}
+      WEBAPP_PORT: ${WEBAPP_PORT}
+      SSL_CERT: ${SSL_CERT}
+      CERT_NAME: ${CERT_NAME}
+      SCHEDULE_PATH: ${SCHEDULE_PATH}
+      FIRST_WEEK_NUMBER: ${FIRST_WEEK_NUMBER}
+      TZ: ${TIMEZONE}
+      DEBUG: False
+    command: ["python", "-u", "main.py"]
+    ports:
+      - ${WEBAPP_PORT}:${WEBAPP_PORT}

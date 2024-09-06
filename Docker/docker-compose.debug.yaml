@@ -1,0 +1,6 @@
+name: schedule_tg
+
+services:
+  bot:
+    environment:
+      - DEBUG=True
