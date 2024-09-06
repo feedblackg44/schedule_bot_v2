@@ -9,6 +9,8 @@ WEBHOOK_HOST = os.getenv('WEBHOOK_HOST')
 WEBAPP_HOST = os.getenv('WEBAPP_HOST')
 WEBAPP_PORT = int(os.getenv('WEBAPP_PORT'))
 CERT_NAME = os.getenv('CERT_NAME')
+if CERT_NAME == 'None':
+    CERT_NAME = None
 SCHEDULE_PATH = os.getenv('SCHEDULE_PATH')
 FIRST_WEEK_NUMBER = int(os.getenv('FIRST_WEEK_NUMBER'))
 DEBUG = os.getenv("DEBUG", "false").lower() == "true"

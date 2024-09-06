@@ -31,9 +31,11 @@ class WebhookApp:
             await self.bot.init()
             self.logger.info(f"Starting webhook on {self.webhook_url}")
             if self.cert_name:
+                self.logger.info(f"Using certificate {self.cert_name}")
                 await self.bot.set_webhook(self.webhook_url,
                                            certificate=FSInputFile(f"/ssl_keys/{self.cert_name}"))
             else:
+                self.logger.info("External certificate used")
                 await self.bot.set_webhook(self.webhook_url)
 
         self.app.on_startup.append(on_startup)
