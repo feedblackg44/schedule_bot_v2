@@ -1,0 +1,46 @@
+timetable:
+  - start: "HH:MM"  # required
+    end: "HH:MM"    # required
+  - start: "HH:MM"
+    end: "HH:MM"
+
+teachers:
+  - name: "teacher_name"  # required
+    telegram: "telegram_username"  # optional
+    phone: "+380123456789"  # optional
+    email: "teacher_email"  # optional
+    link: "https://zoom_link"  # optional
+
+disciplines:
+  - name: "discipline_name"  # required
+    command: "command_name"  # required
+    lecture: "teacher_name"  # required
+    practice: "teacher_name"  # optional
+    extra:  # optional
+        - name: "extra_resource_name"  # required
+          link: "https://extra_resource_link"  # required
+    emoji: "emoji_symbol"  # required
+
+schedule:
+  first:
+    monday:
+      1:
+        - name: "discipline_name"  # required
+          is_lecture: true  # required
+    tuesday:
+      2:
+        - name: "discipline_name"  # required
+          is_lecture: false  # required
+  second:
+    monday:
+      1:
+        - name: "discipline_name"  # required
+          is_lecture: true  # required
+
+schedule_link: "http://schedule_link"  # required
+
+group: "group_name"  # required
+
+extra:  # optional
+  - name: "extra_resource_name"  # required
+    link: "https://extra_resource_link"  # required

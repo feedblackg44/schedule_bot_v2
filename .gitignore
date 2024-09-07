@@ -3,4 +3,5 @@
 .idea
 **/.env
 
+!*.example.yaml
 !Docker/docker-compose*.*
