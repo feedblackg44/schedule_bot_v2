@@ -30,7 +30,7 @@ class BotTemplate(Bot):
         self.disc_commands.clear()
 
     def make_help_command(self):
-        help_message = f'👹 <b>Бот групи <a href="{self.schedule_link}">{self.group}</a></b>👹 \n' + "-" * 50
+        help_message = f'👹 <b>Бот групи <a href="{self.schedule_link}">{self.group}</a></b> 👹\n' + "-" * 50
         help_message += "\nКоманди бота:"
         for command in self.commands.values():
             help_message += f"\n/{command.command} - {command.description}"
