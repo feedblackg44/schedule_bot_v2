@@ -8,7 +8,6 @@ from aiohttp import web
 class WebhookApp:
     def __init__(self, bot, webhook_path, webhook_url, cert_name):
         self.bot = bot
-        self.dp = bot.dp
         self.webhook_url = webhook_url
         self.webhook_path = webhook_path
         self.cert_name = cert_name
@@ -51,7 +50,7 @@ class WebhookApp:
         async def handle(request):
             body = await request.json()
             update = Update(**body)
-            await self.dp.feed_update(self.bot, update)
+            await self.bot.dp.feed_update(self.bot, update)
             return web.Response()
 
         self.app.router.add_post(self.webhook_path, handle)

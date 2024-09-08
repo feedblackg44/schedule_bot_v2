@@ -30,6 +30,7 @@ CERT_NAME=cert_name or None (if using an external certificate, e.g., from Cloudf
 SCHEDULE_PATH=path_to_config
 FIRST_WEEK_NUMBER=1 or 0 (depending on whether the first week is considered even)
 TIMEZONE=Europe/Kiev
+ADMINS=1234567890,0987654321,... (comma-separated list of admin user IDs)
 ```
 3. Use the example configuration provided in `config.example.yaml` to set up your initial schedule. 
 Create new `config.yaml` based on the example, customizing the schedule to your needs.

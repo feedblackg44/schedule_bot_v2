@@ -16,6 +16,7 @@ services:
       SCHEDULE_PATH: ${SCHEDULE_PATH}
       FIRST_WEEK_NUMBER: ${FIRST_WEEK_NUMBER}
       TZ: ${TIMEZONE}
+      ADMINS: ${ADMINS}
       DEBUG: False
     command: ["python", "-u", "main.py"]
     ports:

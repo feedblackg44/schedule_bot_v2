@@ -4,20 +4,35 @@ from aiogram.types import Message
 
 from enums import WeekType
 from schedule import Maker
+from .admin_command_middleware import AdminCommandMiddleware
 from .bot_template import BotTemplate
 
 
 class TelegramBot(BotTemplate):
-    def __init__(self, token, path):
+    def __init__(self, token, path, admins=None):
 
         self.logger = logging.getLogger(__name__)
 
-        schedule_maker = Maker(path)
-        self.schedule, self.teachers, self.disciplines = schedule_maker.make()
+        self.schedule_maker = Maker(path)
+        self.admins = admins
 
-        super().__init__(token=token, schedule_link=self.schedule.link, group=self.schedule.group)
+        self.schedule = None
+        self.teachers = None
+        self.disciplines = None
+
+        link, group = self.make_schedule()
+
+        super().__init__(token=token, schedule_link=link, group=group)
+
+        admin_middleware = AdminCommandMiddleware(self.admins, self.admin_commands)
+        self.dp.update.middleware(admin_middleware)
 
         self.make_commands()
+
+    def make_schedule(self):
+        self.schedule, self.teachers, self.disciplines = self.schedule_maker.make()
+
+        return self.schedule.link, self.schedule.group
 
     def make_commands(self):
         self.start_command()
@@ -31,10 +46,21 @@ class TelegramBot(BotTemplate):
 
         self.teachers_command()
         self.timetable_command()
+        self.extra_command()
 
         self.make_discipline_commands()
 
-        self.extra_command()
+        self.reload_schedule_command()
+
+    def reload_schedule_command(self):
+        self.logger.info("Создание команды /reload")
+        @self.admin_command("reload")
+        async def reload_schedule(message: Message):
+            self.reset_commands()
+            self.make_schedule()
+            self.make_commands()
+            await self.init()
+            await self.send_safe_message(message, "Розклад перезавантажено")
 
     def start_command(self):
         self.logger.info("Создание команды /start")

@@ -24,7 +24,7 @@ def main():
     logging.basicConfig(level=logging.DEBUG if DEBUG else logging.INFO,
                         handlers=[handler])
 
-    bot = TelegramBot(BOT_TOKEN, SCHEDULE_PATH)
+    bot = TelegramBot(BOT_TOKEN, SCHEDULE_PATH, ADMINS)
 
     app = WebhookApp(bot, WEBHOOK_PATH, WEBHOOK_URL, CERT_NAME)
     app.run(WEBAPP_HOST, WEBAPP_PORT)

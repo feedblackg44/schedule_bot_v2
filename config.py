@@ -13,6 +13,7 @@ if CERT_NAME == 'None':
     CERT_NAME = None
 SCHEDULE_PATH = os.getenv('SCHEDULE_PATH')
 FIRST_WEEK_NUMBER = int(os.getenv('FIRST_WEEK_NUMBER'))
+ADMINS = set(map(int, os.getenv('ADMINS').split(',')))
 DEBUG = os.getenv("DEBUG", "false").lower() == "true"
 
 WEBHOOK_PATH = f'/webhook/{BOT_TOKEN}/'

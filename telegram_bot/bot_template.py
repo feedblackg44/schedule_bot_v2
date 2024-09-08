@@ -13,12 +13,21 @@ class BotTemplate(Bot):
         self.group = group
         self.logger = logging.getLogger(__name__)
 
-        self.commands = []
-        self.disc_commands = []
+        self.commands = {}
+        self.disc_commands = {}
+        self.admin_commands = []
 
-        self.router = Router()
+        self.dp = None
+        self.router = None
+
+        self.reset_commands()
+
+    def reset_commands(self):
         self.dp = Dispatcher()
+        self.router = Router()
         self.dp.include_router(self.router)
+        self.commands.clear()
+        self.disc_commands.clear()
 
     def make_help_command(self):
         help_message = f'👹 <b>Бот групи <a href="{self.schedule_link}">{self.group}</a></b>👹 \n' + "-" * 50
@@ -36,16 +45,24 @@ class BotTemplate(Bot):
         await self.set_user_commands()
 
     async def set_user_commands(self):
-        await self.set_my_commands(self.commands + self.disc_commands)
+        await self.set_my_commands([*self.commands.values(), *self.disc_commands.values()])
 
     def command(self, command_name, description, discipline=False):
         def decorator(func):
             self.router.message(Command(command_name))(func)
             if command_name != 'start':
                 if not discipline:
-                    self.commands.append(BotCommand(command=command_name, description=description))
+                    self.commands[command_name] = BotCommand(command=command_name, description=description)
                 else:
-                    self.disc_commands.append(BotCommand(command=command_name, description=description))
+                    self.disc_commands[command_name] = BotCommand(command=command_name, description=description)
+            return func
+        return decorator
+
+    def admin_command(self, command_name):
+        def decorator(func):
+            self.router.message(Command(command_name))(func)
+            if command_name not in self.admin_commands:
+                self.admin_commands.append(command_name)
             return func
         return decorator
 
