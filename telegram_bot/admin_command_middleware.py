@@ -15,7 +15,7 @@ class AdminCommandMiddleware(BaseMiddleware):
     async def __call__(self, handler, event, data):
         self.logger.debug(f"Event: {event}")
         self.logger.debug(f"Data: {data}")
-        if event.message.text and event.message.text.startswith('/'):
+        if event and event.message and event.message.text and event.message.text.startswith('/'):
             command = event.message.text.split()[0].split('@')[0][1:]
             self.logger.debug(f"Command: {command}")
             self.logger.debug(f"{command} in {self.admin_commands}")
