@@ -55,6 +55,7 @@ class Schedule:
             return f"⏱ До кінця пари залишилось: {str_diff}"
 
     def today(self):
+        self.logger.debug(get_current_week_number(WeekType.CURRENT))
         if today_day := self.weeks[get_current_week_number(WeekType.CURRENT)].today():
             return today_day
         else:
@@ -80,7 +81,7 @@ class Schedule:
         else:
             week_number = get_current_week_number(week)
             str_out = f"📅 {week} тиждень 📅\n\n"
-            str_out += f"{self.weeks[week_number - 1]}"
+            str_out += f"{self.weeks[week_number]}"
             return str_out
 
     def __str__(self):
