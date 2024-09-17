@@ -1,8 +1,8 @@
 import logging
 
-from aiogram import Bot, Router, Dispatcher
+from aiogram import Bot, Router, Dispatcher, F
 from aiogram.filters import Command
-from aiogram.types import BotCommand
+from aiogram.types import BotCommand, InlineQueryResultArticle, InputTextMessageContent
 
 
 class BotTemplate(Bot):
@@ -16,6 +16,8 @@ class BotTemplate(Bot):
         self.commands = {}
         self.disc_commands = {}
         self.admin_commands = []
+
+        self.inline_results = {}
 
         self.dp = None
         self.router = None
@@ -47,9 +49,40 @@ class BotTemplate(Bot):
     async def set_user_commands(self):
         await self.set_my_commands([*self.commands.values(), *self.disc_commands.values()])
 
-    def command(self, command_name, description, discipline=False):
+    def register_inline_result(self):
+        @self.dp.inline_query(F.query)
+        async def inline_suggestions(query):
+            str_query = query.query.strip().lower()
+
+            self.logger.debug(f"Поиск подсказок для запроса: {str_query}")
+
+            if str_query == "":
+                suggestions = list(self.inline_results.values())
+            else:
+                suggestions = [self.inline_results[command] for command in self.inline_results
+                               if str_query in command]
+
+            await query.answer(suggestions, cache_time=1)
+
+    def command(self, command_name, description,
+                discipline=False,
+                answer=False,
+                parse_mode="HTML",
+                disable_web_page_preview=True):
         def decorator(func):
-            self.router.message(Command(command_name))(func)
+            async def func_wrapper(message):
+                await self.send_safe_message(message, func(), answer=answer)
+            self.router.message(Command(command_name))(func_wrapper)
+
+            self.inline_results[command_name] = InlineQueryResultArticle(
+                id=command_name,
+                title=command_name,
+                input_message_content=InputTextMessageContent(message_text=func(),
+                                                              parse_mode=parse_mode,
+                                                              disable_web_page_preview=disable_web_page_preview),
+                description=description
+            )
+
             if command_name != 'start':
                 if not discipline:
                     self.commands[command_name] = BotCommand(command=command_name, description=description)
