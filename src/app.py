@@ -19,14 +19,13 @@ class WebhookApp:
         self._on_shutdown()
         self._on_update()
 
-
     def run(self, host, port):
         web.run_app(self.app,
                     host=host,
                     port=port)
 
     def _on_startup(self):
-        async def on_startup(app):
+        async def on_startup(app):  # noqa
             await self.bot.init()
             self.logger.info(f"Starting webhook on {self.webhook_url}")
             if self.cert_name:
@@ -40,7 +39,7 @@ class WebhookApp:
         self.app.on_startup.append(on_startup)
 
     def _on_shutdown(self):
-        async def on_shutdown(app):
+        async def on_shutdown(app):  # noqa
             self.logger.info("Shutting down webhook")
             await self.bot.delete_webhook()
 

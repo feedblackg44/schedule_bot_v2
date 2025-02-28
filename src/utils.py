@@ -17,6 +17,7 @@ def get_current_week_number(week=WeekType.CURRENT):
     else:
         raise ValueError("Invalid week type")
 
+
 def get_current_day(next_day=False):
     todate = datetime.now()
     if next_day:
@@ -37,6 +38,7 @@ def get_current_day(next_day=False):
         case 6:
             return Weekday.SUNDAY
 
+
 def declination(plural_word_234, single_word, plural_word, amount):
     if 4 >= amount % 10 >= 2 and (amount % 100 < 12 or amount % 100 > 14):
         return plural_word_234
@@ -44,6 +46,7 @@ def declination(plural_word_234, single_word, plural_word, amount):
         return single_word
     else:
         return plural_word
+
 
 def get_str_datetime(time: datetime):
     if time is None:

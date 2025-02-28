@@ -56,11 +56,25 @@ class BotTemplate(Bot):
 
             self.logger.debug(f"Поиск подсказок для запроса: {str_query}")
 
-            if str_query == "":
-                suggestions = list(self.inline_results.values())
-            else:
-                suggestions = [self.inline_results[command] for command in self.inline_results
-                               if str_query in command]
+            # if str_query == "":
+            #     suggestions = list(self.inline_results.values())
+            # else:
+            #     suggestions = [self.inline_results[command] for command in self.inline_results
+            #                    if str_query in command]
+
+            suggestions = []
+            for command, c_dict in self.inline_results.items():
+                if str_query == "" or str_query in command:
+                    suggestions.append(InlineQueryResultArticle(
+                        id=c_dict['id'],
+                        title=c_dict['title'],
+                        input_message_content=InputTextMessageContent(
+                            message_text=c_dict['input_message_content']['message_func'](),
+                            parse_mode=c_dict['input_message_content']['parse_mode'],
+                            disable_web_page_preview=c_dict['input_message_content']['disable_web_page_preview']
+                        ),
+                        description=c_dict['description']
+                    ))
 
             await query.answer(suggestions, cache_time=1)
 
@@ -74,12 +88,12 @@ class BotTemplate(Bot):
                 await self.send_safe_message(message, func(), answer=answer)
             self.router.message(Command(command_name))(func_wrapper)
 
-            self.inline_results[command_name] = InlineQueryResultArticle(
+            self.inline_results[command_name] = dict(
                 id=command_name,
                 title=command_name,
-                input_message_content=InputTextMessageContent(message_text=func(),
-                                                              parse_mode=parse_mode,
-                                                              disable_web_page_preview=disable_web_page_preview),
+                input_message_content=dict(message_func=func,
+                                           parse_mode=parse_mode,
+                                           disable_web_page_preview=disable_web_page_preview),
                 description=description
             )
 

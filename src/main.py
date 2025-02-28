@@ -6,6 +6,7 @@ from app import WebhookApp
 from telegram_bot import TelegramBot
 from config import *
 
+
 def main():
     formatter = ColoredFormatter(
         '%(black)s%(asctime)s %(log_color)s%(levelname)-8s %(purple)s%(name)s:%(reset)s %(message)s',

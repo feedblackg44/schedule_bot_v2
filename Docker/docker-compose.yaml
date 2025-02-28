@@ -4,7 +4,8 @@ services:
   bot:
     build: ..
     volumes:
-      - ..:/app
+      - ../configs:/app/configs
+      - ../src:/app
       - ${SSL_CERT}:/ssl_keys
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
