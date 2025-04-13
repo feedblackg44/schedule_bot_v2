@@ -1,12 +1,21 @@
 # Telegram Schedule Bot
 
-This Telegram bot helps users keep track of online lessons and conveniently store information such as links or start times, ensuring that no lesson is missed. Built with `aiogram` 3.12 and Python 3.11, it offers an easy-to-use interface for managing all your lesson details.
+This Telegram bot helps users keep track of online lessons and conveniently store information such as links or start times, ensuring that no lesson is missed. Built with Python 3.12, aiogram 3.12 and aiohttp 3.10.5, it offers an easy-to-use interface for managing all your lesson details.
 
 ## Features
 - **Flexible Scheduling**: Easily configure lesson schedules using a YAML configuration file.
 - **Secure Webhooks**: Supports secure communication via webhooks with SSL.
 - **Timezone Support**: Automatically adjusts schedules based on the specified timezone.
 - **Customizable Configuration**: Configure bot settings through `.env` and `config.yaml` files.
+
+## Technology Stack
+
+- [Python 3.12](https://www.python.org/)
+- [aiogram 3.12](https://docs.aiogram.dev/)
+- [aiohttp 3.10.5](https://docs.aiohttp.org/en/stable/)
+- Docker & Docker Compose
+- YAML for configuration
+- Environment variables via `.env` file
 
 ## Requirements
 
