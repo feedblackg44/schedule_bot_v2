@@ -2,6 +2,7 @@
 *.yaml
 .idea
 **/.env
+.venv
 
 !*.example.yaml
 !Docker/docker-compose*.*

@@ -5,7 +5,7 @@ services:
     build: ..
     volumes:
       - ../configs:/app/configs
-      - ../src:/app
+      - ../src:/app/src
       - ${SSL_CERT}:/ssl_keys
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
@@ -19,6 +19,5 @@ services:
       TZ: ${TIMEZONE}
       ADMINS: ${ADMINS}
       DEBUG: False
-    command: ["python", "-u", "main.py"]
     ports:
       - ${WEBAPP_PORT}:${WEBAPP_PORT}
