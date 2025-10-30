@@ -10,8 +10,8 @@ services:
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
       WEBHOOK_HOST: ${WEBHOOK_HOST}
-      WEBAPP_HOST: ${WEBAPP_HOST}
-      WEBAPP_PORT: ${WEBAPP_PORT}
+      WEBAPP_HOST: ${WEBAPP_HOST:-0.0.0.0}
+      WEBAPP_PORT: ${WEBAPP_PORT:-8080}
       SSL_CERT: ${SSL_CERT}
       CERT_NAME: ${CERT_NAME}
       SCHEDULE_PATH: ${SCHEDULE_PATH}
@@ -20,4 +20,4 @@ services:
       ADMINS: ${ADMINS}
       DEBUG: False
     ports:
-      - ${WEBAPP_PORT}:${WEBAPP_PORT}
+      - ${LOCAL_MACHINE_URL:-8080}:${WEBAPP_PORT:-8080}
