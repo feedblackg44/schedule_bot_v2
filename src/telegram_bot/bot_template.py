@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from aiogram import Bot, Router, Dispatcher, F
 from aiogram.filters import Command
@@ -62,11 +63,12 @@ class BotTemplate(Bot):
             #     suggestions = [self.inline_results[command] for command in self.inline_results
             #                    if str_query in command]
 
+            current_date = datetime.now().strftime('%Y%m%d_%H')
             suggestions = []
             for command, c_dict in self.inline_results.items():
                 if str_query == "" or str_query in command:
                     suggestions.append(InlineQueryResultArticle(
-                        id=c_dict['id'],
+                        id=f"{c_dict['id']}_{current_date}",
                         title=c_dict['title'],
                         input_message_content=InputTextMessageContent(
                             message_text=c_dict['input_message_content']['message_func'](),
@@ -76,7 +78,7 @@ class BotTemplate(Bot):
                         description=c_dict['description']
                     ))
 
-            await query.answer(suggestions, cache_time=1)
+            await query.answer(suggestions, cache_time=0)
 
     def command(self, command_name, description,
                 discipline=False,
