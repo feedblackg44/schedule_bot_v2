@@ -3,6 +3,7 @@
 .idea
 **/.env
 .venv
+chart
 
 !*.example.yaml
 !Docker/docker-compose*.*
