@@ -7,13 +7,13 @@ load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 WEBHOOK_HOST = os.getenv('WEBHOOK_HOST')
 WEBAPP_HOST = os.getenv('WEBAPP_HOST')
-WEBAPP_PORT = int(os.getenv('WEBAPP_PORT'))
+WEBAPP_PORT = int(os.getenv('WEBAPP_PORT', '8000'))
 CERT_NAME = os.getenv('CERT_NAME')
 if CERT_NAME == 'None':
     CERT_NAME = None
 SCHEDULE_PATH = os.getenv('SCHEDULE_PATH')
-FIRST_WEEK_NUMBER = int(os.getenv('FIRST_WEEK_NUMBER'))
-ADMINS = set(map(int, os.getenv('ADMINS').split(',')))
+FIRST_WEEK_NUMBER = int(os.getenv('FIRST_WEEK_NUMBER', '0'))
+ADMINS = set(map(int, os.getenv('ADMINS', '').split(',')))
 DEBUG = os.getenv("DEBUG", "false").lower() == "true"
 
 WEBHOOK_PATH = f'/webhook/{BOT_TOKEN}/'

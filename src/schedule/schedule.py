@@ -18,7 +18,7 @@ class Schedule:
         self.logger = logging.getLogger(__name__)
 
     def left(self):
-        cur_time = datetime.now().time()
+        cur_time = datetime.now().time()  # noqa: DTZ005 -- naive local time, container TZ set via docker-compose
         today_day = self.today()
         if isinstance(today_day, str):
             return today_day
@@ -38,13 +38,13 @@ class Schedule:
         if not next_time:
             return "Сьогодні занять не залишилось 😊"
 
-        cur_time = datetime.combine(datetime.now().date(), cur_time)
-        next_time["time"] = datetime.combine(datetime.now().date(), next_time["time"])
+        cur_time = datetime.combine(datetime.now().date(), cur_time)  # noqa: DTZ005 -- naive local time, container TZ set via docker-compose
+        next_time["time"] = datetime.combine(datetime.now().date(), next_time["time"])  # noqa: DTZ005
 
         self.logger.info(f"cur_time: {cur_time}, next_time: {next_time['time']}")
 
         diff = next_time["time"] - cur_time
-        diff = datetime.utcfromtimestamp(diff.total_seconds())
+        diff = datetime.utcfromtimestamp(diff.total_seconds())  # noqa: DTZ004 -- used only to format a duration, not a real timestamp
         self.logger.info(f"diff: {diff}")
 
         str_diff = get_str_datetime(diff)

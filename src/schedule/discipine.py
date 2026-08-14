@@ -32,7 +32,7 @@ class Discipline:
         str_out += f"Лекції:\n{self.to_short_str(LessonType.LECTURE, '- ')}\n"
         str_out += f"Практики:\n{self.to_short_str(LessonType.PRACTICE, '- ')}\n"
         if self.extra:
-            str_out += f"Інше:\n"
+            str_out += "Інше:\n"
             for extra in self.extra:
                 str_out += f"- <a href='{extra['link']}'>{extra['name']}</a>\n"
 

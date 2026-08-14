@@ -1,7 +1,7 @@
 import logging
 
-from aiogram.types.input_file import FSInputFile
 from aiogram.types import Update
+from aiogram.types.input_file import FSInputFile
 from aiohttp import web
 
 
@@ -25,7 +25,7 @@ class WebhookApp:
                     port=port)
 
     def _on_startup(self):
-        async def on_startup(app):  # noqa
+        async def on_startup(app):
             await self.bot.init()
             self.logger.info(f"Starting webhook on {self.webhook_url}")
             if self.cert_name:
@@ -39,7 +39,7 @@ class WebhookApp:
         self.app.on_startup.append(on_startup)
 
     def _on_shutdown(self):
-        async def on_shutdown(app):  # noqa
+        async def on_shutdown(app):
             self.logger.info("Shutting down webhook")
             await self.bot.delete_webhook()
 

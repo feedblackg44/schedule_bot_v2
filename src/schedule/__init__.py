@@ -1,4 +1,6 @@
-from .teacher import Teacher
 from .discipine import Discipline
-from .schedule import Schedule
 from .maker import Maker
+from .schedule import Schedule
+from .teacher import Teacher
+
+__all__ = ["Discipline", "Maker", "Schedule", "Teacher"]

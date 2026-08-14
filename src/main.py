@@ -3,8 +3,18 @@ import logging
 from colorlog import ColoredFormatter
 
 from app import WebhookApp
+from config import (
+    ADMINS,
+    BOT_TOKEN,
+    CERT_NAME,
+    DEBUG,
+    SCHEDULE_PATH,
+    WEBAPP_HOST,
+    WEBAPP_PORT,
+    WEBHOOK_PATH,
+    WEBHOOK_URL,
+)
 from telegram_bot import TelegramBot
-from config import *
 
 
 def main():

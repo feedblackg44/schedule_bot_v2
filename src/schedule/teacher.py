@@ -1,4 +1,3 @@
-import logging
 
 
 class Teacher:
@@ -28,6 +27,6 @@ class Teacher:
         elif self.phone:
             string_out += f" ({self.phone})"
         else:
-            string_out += f" (немає контактів)"
+            string_out += " (немає контактів)"
 
         return string_out

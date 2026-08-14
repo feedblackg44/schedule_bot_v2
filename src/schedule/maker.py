@@ -4,7 +4,7 @@ from datetime import time
 import yaml
 
 from enums import Weekday
-from schedule import Teacher, Discipline, Schedule
+from schedule import Discipline, Schedule, Teacher
 from schedule.calendar import Day, Lesson, Week
 
 
@@ -13,14 +13,14 @@ class Maker:
         self.logger = logging.getLogger(__name__)
         self.path = path
 
-    def make(self):
+    def make(self) -> tuple[Schedule, dict[str, Teacher], dict[str, Discipline]]:
         self.logger.info(f"Загрузка расписания из файла {self.path}")
         with open(self.path, "r", encoding='UTF-8') as file:
             schedule_file = yaml.safe_load(file)
 
         if schedule_file is None:
             self.logger.error(f"Файл {self.path} пуст")
-            return
+            return Schedule([], "", [], "", []), {}, {}
 
         timetable = [{'start': time.fromisoformat(time_['start']),
                       'end': time.fromisoformat(time_['end'])}

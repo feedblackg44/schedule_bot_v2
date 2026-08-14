@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 
-from enums import WeekType, Weekday
 from config import FIRST_WEEK_NUMBER
+from enums import Weekday, WeekType
 
 
 def get_current_week_number(week=WeekType.CURRENT):
-    current_week_number = datetime.now().isocalendar()[1]
+    current_week_number = datetime.now().isocalendar()[1]  # noqa: DTZ005 -- naive local time, container TZ set via docker-compose
     if week == WeekType.CURRENT:
         return (current_week_number + FIRST_WEEK_NUMBER) % 2
     elif week == WeekType.NEXT:
@@ -19,7 +19,7 @@ def get_current_week_number(week=WeekType.CURRENT):
 
 
 def get_current_day(next_day=False):
-    todate = datetime.now()
+    todate = datetime.now()  # noqa: DTZ005 -- naive local time, container TZ set via docker-compose
     if next_day:
         todate = todate + timedelta(days=1)
     match todate.weekday():

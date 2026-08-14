@@ -4,6 +4,7 @@ from aiogram.types import Message
 
 from enums import WeekType
 from schedule import Maker
+
 from .admin_command_middleware import AdminCommandMiddleware
 from .bot_template import BotTemplate
 
@@ -21,10 +22,13 @@ class TelegramBot(BotTemplate):
 
         link, group = self.make_schedule()
 
+        self.default_empty_answer = "Розклад не завантажено"
+
         super().__init__(token=token, schedule_link=link, group=group)
 
         admin_middleware = AdminCommandMiddleware(self.admins, self.admin_commands)
-        self.dp.update.middleware(admin_middleware)
+        if self.dp is not None:
+            self.dp.update.middleware(admin_middleware)
 
         self.make_commands()
         self.register_inline_result()
@@ -83,14 +87,14 @@ class TelegramBot(BotTemplate):
 
         @self.command("left", "Час до наступної пари/до кінця поточної")
         def send_left_time():
-            return self.schedule.left()
+            return self.schedule.left() if self.schedule else self.default_empty_answer
 
     def today_command(self):
         self.logger.info("Создание команды /today")
 
         @self.command("today", "Розклад на сьогодні")
         def send_today_schedule():
-            answer = self.schedule.today()
+            answer = self.schedule.today() if self.schedule else self.default_empty_answer
             if not isinstance(answer, str):
                 answer = answer.to_str(use_time=True)
             return answer
@@ -100,7 +104,7 @@ class TelegramBot(BotTemplate):
 
         @self.command("tomorrow", "Розклад на завтра")
         def send_tomorrow_schedule():
-            answer = self.schedule.tomorrow()
+            answer = self.schedule.tomorrow() if self.schedule else self.default_empty_answer
             if not isinstance(answer, str):
                 answer = answer.to_str(use_time=True)
             return answer
@@ -110,27 +114,29 @@ class TelegramBot(BotTemplate):
 
         @self.command("week", "Розклад на тиждень")
         def send_week_schedule():
-            return self.schedule.to_str(week=WeekType.CURRENT)
+            return self.schedule.to_str(week=WeekType.CURRENT) if self.schedule else self.default_empty_answer
 
     def nextweek_command(self):
         self.logger.info("Создание команды /nextweek")
 
         @self.command("nextweek", "Розклад на наступний тиждень")
         def send_next_week_schedule():
-            return self.schedule.to_str(week=WeekType.NEXT)
+            return self.schedule.to_str(week=WeekType.NEXT) if self.schedule else self.default_empty_answer
 
     def full_command(self):
         self.logger.info("Создание команды /full")
 
         @self.command("full", "Повний розклад")
         def send_full_schedule():
-            return str(self.schedule)
+            return str(self.schedule) if self.schedule else self.default_empty_answer
 
     def teachers_command(self):
         self.logger.info("Создание команды /teachers")
 
         @self.command("teachers", "Викладачі")
         def send_teachers():
+            if self.teachers is None:
+                return self.default_empty_answer
             str_out = "🎓 Викладачі 🎓\n\n"
             for idx, teacher in enumerate(self.teachers.values()):
                 str_out += f"- {teacher}"
@@ -143,6 +149,8 @@ class TelegramBot(BotTemplate):
 
         @self.command("timetable", "Розклад занять")
         def send_timetable():
+            if self.schedule is None:
+                return self.default_empty_answer
             str_out = "🗓 Розклад дзвінків 🗓\n\n"
             for idx, lesson_time in enumerate(self.schedule.timetable, start=1):
                 str_out += (f"{idx} пара:  {lesson_time['start'].strftime('%H:%M')} - "
@@ -152,6 +160,9 @@ class TelegramBot(BotTemplate):
             return str_out
 
     def make_discipline_commands(self):
+        if not self.disciplines:
+            self.logger.info("Дисципліни відсутні")
+            return
         for name, discipline in self.disciplines.items():
             self.logger.info(f"Создание команды /{discipline.command}")
 
@@ -160,11 +171,11 @@ class TelegramBot(BotTemplate):
                 return str(disc)
 
     def extra_command(self):
-        if self.schedule.extra:
+        if self.schedule and self.schedule.extra:
             self.logger.info("Создание команды /extra")
 
             @self.command("extra", "Додаткова інформація")
             def send_extra():
-                return self.schedule.str_extra()
+                return self.schedule.str_extra() if self.schedule else self.default_empty_answer
         else:
             self.logger.info("Додаткова інформація відсутня")

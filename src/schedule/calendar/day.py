@@ -7,7 +7,7 @@ class Day:
         self.lessons = lessons
 
     def to_str(self, use_time=False):
-        str_out = f"{self.emoji} {str(self.name)} {self.emoji}\n"
+        str_out = f"{self.emoji} {self.name!s} {self.emoji}\n"
         for i, (idx, lesson) in enumerate(self.lessons.items(), start=1):
             str_out += f"{idx}. {lesson.to_str_with_time() if use_time else str(lesson)}"
             if i != len(self.lessons):
