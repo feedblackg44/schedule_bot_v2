@@ -10,9 +10,9 @@ This Telegram bot helps users keep track of online lessons and conveniently stor
 
 ## Technology Stack
 
-- [Python 3.12](https://www.python.org/)
-- [aiogram 3.21](https://docs.aiogram.dev/)
-- [aiohttp 3.12.14](https://docs.aiohttp.org/en/stable/)
+- [Python 3.13](https://www.python.org/)
+- [aiogram 3.30](https://docs.aiogram.dev/)
+- [aiohttp 3.14.3](https://docs.aiohttp.org/en/stable/)
 - Docker & Docker Compose
 - YAML for configuration
 - Environment variables via `.env` file
