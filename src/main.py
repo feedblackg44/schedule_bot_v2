@@ -17,7 +17,7 @@ from config import (
 from telegram_bot import TelegramBot
 
 
-def main():
+def main() -> None:
     formatter = ColoredFormatter(
         '%(black)s%(asctime)s %(log_color)s%(levelname)-8s %(purple)s%(name)s:%(reset)s %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',

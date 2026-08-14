@@ -1,6 +1,7 @@
+import enum
 
 
-class WeekType:
+class WeekType(enum.Enum):
     ALL = 'all'
     CURRENT = 'Поточний'
     NEXT = 'Наступний'

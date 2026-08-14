@@ -1,38 +1,62 @@
 import logging
+from collections.abc import Awaitable, Callable
 from datetime import datetime
+from typing import TypedDict
 
 from aiogram import Bot, Dispatcher, Router
 from aiogram.filters import Command
-from aiogram.types import BotCommand, InlineQueryResultArticle, InputTextMessageContent
+from aiogram.types import (
+    BotCommand,
+    InlineQuery,
+    InlineQueryResultArticle,
+    InlineQueryResultUnion,
+    InputTextMessageContent,
+    Message,
+)
+
+
+class InlineResultContent(TypedDict):
+    """Represents the message content of an inline result."""
+    message_func: Callable[[], str]
+    parse_mode: str
+    disable_web_page_preview: bool
+
+
+class InlineResultEntry(TypedDict):
+    """Represents a registered command as an inline query suggestion."""
+    id: str
+    title: str
+    input_message_content: InlineResultContent
+    description: str
 
 
 class BotTemplate(Bot):
-    def __init__(self, token, schedule_link, group):
+    def __init__(self, token: str, schedule_link: str, group: str) -> None:
         super().__init__(token=token)
 
-        self.schedule_link = schedule_link
-        self.group = group
+        self.schedule_link: str = schedule_link
+        self.group: str = group
         self.logger = logging.getLogger(__name__)
 
-        self.commands = {}
-        self.disc_commands = {}
-        self.admin_commands = []
+        self.commands: dict[str, BotCommand] = {}
+        self.disc_commands: dict[str, BotCommand] = {}
+        self.admin_commands: list[str] = []
 
-        self.inline_results = {}
+        self.inline_results: dict[str, InlineResultEntry] = {}
 
-        self.dp = None
-        self.router = None
+        self.dp: Dispatcher | None = None
+        self.router: Router | None = None
 
         self.reset_commands()
 
-    def reset_commands(self):
+    def reset_commands(self) -> None:
         self.dp = Dispatcher()
         self.router = Router()
         self.dp.include_router(self.router)
         self.commands.clear()
         self.disc_commands.clear()
 
-    def make_help_command(self):
+    def make_help_command(self) -> str:
         help_message = f'👹 <b>Бот групи <a href="{self.schedule_link}">{self.group}</a></b> 👹\n' + "-" * 50
         help_message += "\nКоманди бота:"
         for command in self.commands.values():
@@ -44,25 +68,25 @@ class BotTemplate(Bot):
 
         return help_message
 
-    async def init(self):
+    async def init(self) -> None:
         await self.set_user_commands()
 
-    async def set_user_commands(self):
+    async def set_user_commands(self) -> None:
         await self.set_my_commands([*self.commands.values(), *self.disc_commands.values()])
 
-    def register_inline_result(self):
+    def register_inline_result(self) -> None:
         if not self.router:
             self.logger.error("Router не инициализирован. Вызовите reset_commands() перед регистрацией inline результатов.")
             return
 
         @self.router.inline_query()
-        async def inline_suggestions(query):
+        async def inline_suggestions(query: InlineQuery) -> None:
             str_query = query.query.strip().lower()
 
             self.logger.debug(f"Inline query: '{str_query}', results available: {list(self.inline_results.keys())}")
 
             current_date = datetime.now().strftime('%Y%m%d_%H')  # noqa: DTZ005 -- naive local time, container TZ set via docker-compose
-            suggestions = []
+            suggestions: list[InlineQueryResultUnion] = []
             for command, c_dict in self.inline_results.items():
                 if str_query == "" or str_query in command:
                     try:
@@ -83,17 +107,18 @@ class BotTemplate(Bot):
             self.logger.debug(f"Returning {len(suggestions)} suggestions")
             await query.answer(suggestions, cache_time=0)
 
-    def command(self, command_name, description,
-                discipline=False,
-                answer=False,
-                parse_mode="HTML",
-                disable_web_page_preview=True):
-        def decorator(func):
+    def command(self, command_name: str, description: str,
+                discipline: bool = False,
+                answer: bool = False,
+                parse_mode: str = "HTML",
+                disable_web_page_preview: bool = True
+                ) -> Callable[[Callable[[], str]], Callable[[], str]]:
+        def decorator(func: Callable[[], str]) -> Callable[[], str]:
             if not self.router:
                 self.logger.error("Router не инициализирован. Вызовите init() перед регистрацией команд.")
                 return func
-            
-            async def func_wrapper(message):
+
+            async def func_wrapper(message: Message) -> None:
                 await self.send_safe_message(message, func(), answer=answer)
             self.router.message(Command(command_name))(func_wrapper)
 
@@ -114,23 +139,24 @@ class BotTemplate(Bot):
             return func
         return decorator
 
-    def admin_command(self, command_name):
-        def decorator(func):
+    def admin_command(self, command_name: str
+                       ) -> Callable[[Callable[[Message], Awaitable[None]]], Callable[[Message], Awaitable[None]]]:
+        def decorator(func: Callable[[Message], Awaitable[None]]) -> Callable[[Message], Awaitable[None]]:
             if not self.router:
                 self.logger.error("Router не инициализирован. Вызовите init() перед регистрацией команд.")
                 return func
-            
+
             self.router.message(Command(command_name))(func)
             if command_name not in self.admin_commands:
                 self.admin_commands.append(command_name)
             return func
         return decorator
 
-    async def send_safe_message(self, inc_message, out_message,
-                                answer=False,
-                                parse_mode="HTML",
-                                max_len=4096,
-                                disable_web_page_preview=True):
+    async def send_safe_message(self, inc_message: Message, out_message: str,
+                                answer: bool = False,
+                                parse_mode: str = "HTML",
+                                max_len: int = 4096,
+                                disable_web_page_preview: bool = True) -> None:
         if not out_message:
             self.logger.warning("Пустое сообщение")
             return
